@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+  bot:
+    container_name: 'komarov'
+    build: .
+    ports:
+      - '5001:5000'
+    volumes:
+      - ./data/:/app/data
+    restart: always
+    env_file:
+      - '.env'
+    command: python3 app
