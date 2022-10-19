@@ -11,7 +11,7 @@ error_authorization_message = "<pre>Доступ запрещен ⛔</pre>"
 
 loading_icon = r'CAACAgIAAxkBAAJNN2I3GMOSOBp9h5OH-kDsCF71w8t-AAJDAQACzRswCIC-idiBA72TIwQ'
 
-record_to_center_message = '<pre>🔎 В какой центр удобно записаться ?</pre>'
+record_to_center_message = '<pre>🔎В какой центр удобно записаться ?</pre>'
 date_to_center_message = '<pre>Выберите дату приема:</pre>'
 time_to_center_message = """
 <pre>Пришлите желаемое время на прием</pre>
