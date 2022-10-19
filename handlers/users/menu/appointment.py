@@ -117,14 +117,14 @@ async def send_data(call: CallbackQuery, callback_data: dict, state: FSMContext)
                 center = get_addresses_by_id_db(data['location'])
                 record_time = f"{data['picked_data']} {data['time']}"
                 user = get_user_db(tg_id=call.message.chat.id)
-                payload = CreateRecord(location=center.address, date_time=record_time, user_id=user.id,
+                payload = CreateRecord(location=data['location'], date_time=record_time, user_id=user.id,
                                        service=data['service'])
                 record = add_record_db(payload)
                 await dp.bot.send_message(
                     chat_id=GROUP_ID,
                     text=send_admins_record_message.format(
                         record.id, f'<a href="{call.from_user.url}">{call.from_user.first_name}</a>', record_time,
-                        data['service'], center.address),
+                        data['service'], data['location']),
                     reply_markup=accept_record_button(record.id))
                 await call.message.answer(text=send_data_record, reply_markup=main_menu_buttons)
             case 'edit':
