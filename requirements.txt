@@ -10,3 +10,4 @@ passlib~=1.7.4
 geopy~=2.2.0
 python-multipart
 apscheduler
+jmespath
