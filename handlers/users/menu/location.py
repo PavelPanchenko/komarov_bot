@@ -7,7 +7,7 @@ from geopy.geocoders import Nominatim
 geolocator = Nominatim(user_agent="tg_bot")
 
 
-@dp.message_handler(text='🛴Как добраться', state='*')
+@dp.message_handler(text='🚗Как добраться', state='*')
 async def location_map(message: Message):
     addresses = get_addresses_db()
     await message.answer('<pre>Выберите адрес:</pre>', reply_markup=location_items(addresses, event='geo'))

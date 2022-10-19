@@ -23,7 +23,7 @@ from utils.variables import record_to_center_message, date_to_center_message, ti
 inline_calendar = InlineCalendar()
 
 
-@dp.message_handler(text='📝Новая запись', state='*')
+@dp.message_handler(text='📑Новая запись', state='*')
 async def get_location_center(message: Message, state: FSMContext):
     await state.reset_state(with_data=False)
     location = get_addresses_db()

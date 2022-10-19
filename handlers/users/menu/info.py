@@ -6,7 +6,7 @@ from aiogram.types import Message, ChatType
 from aiogram.dispatcher.filters import ChatTypeFilter
 
 
-@dp.message_handler(ChatTypeFilter(ChatType.PRIVATE), text='Информация 🧠', state='*')
+@dp.message_handler(ChatTypeFilter(ChatType.PRIVATE), text='❕Информация', state='*')
 async def info_menu(message: Message, state: FSMContext):
     await state.reset_state(with_data=False)
     await message.answer(text='<pre>Информация:</pre>', reply_markup=info_menu_buttons)

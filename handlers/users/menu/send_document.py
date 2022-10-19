@@ -12,7 +12,7 @@ from states.state import Appointments
 from utils.variables import send_document_message, error_format_files_message, success_format_files_message
 
 
-@dp.message_handler(text='Отправить файл 📇', state='*')
+@dp.message_handler(text='📌Отправить файл', state='*')
 async def send_document(message: Message):
     await message.answer(text=send_document_message)
     await Appointments.file.set()
