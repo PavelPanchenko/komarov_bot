@@ -24,7 +24,7 @@ main_menu_buttons.add(KeyboardButton(text='❔Задать вопрос'))
 info_menu_buttons = ReplyKeyboardMarkup(resize_keyboard=True, selective=False)
 info_menu_buttons.add(KeyboardButton(text='🗓График'))
 info_menu_buttons.insert(KeyboardButton(text='🩺Подготовка'))
-info_menu_buttons.add(KeyboardButton(text='🚗Как добраться'))
+info_menu_buttons.insert(KeyboardButton(text='🚗Как добраться'))
 info_menu_buttons.add(KeyboardButton(text='🔙Главное меню'))
 
 support_close_button = ReplyKeyboardMarkup(resize_keyboard=True)
