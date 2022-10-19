@@ -14,7 +14,7 @@ def location_items(locations, event: str = 'center_list', active_id: int | None 
     for center in locations:
         address = center.address
         markup.add(InlineKeyboardButton(
-            text=f"🔵 {address}" if active_id and active_id == center.id else "🔴 {address}",
+            text=f"🔵 {address}" if active_id and active_id == center.id else f"🔴 {address}",
             callback_data=callback_center.new(event=event, payload=center.id)))
     return markup
 
