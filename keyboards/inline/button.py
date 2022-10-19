@@ -9,12 +9,12 @@ callback_record = CallbackData('record', 'event', 'payload')
 callback_file = CallbackData('file', 'event', 'payload')
 
 
-def location_items(locations, event: str = 'center_list', active_id: int | None = None):
+def location_items(locations, event: str = 'center_list'):
     markup = InlineKeyboardMarkup()
     for center in locations:
         address = center.address
         markup.add(InlineKeyboardButton(
-            text=f"🔵 {address}" if active_id and active_id == center.id else f"🔴 {address}",
+            text=f"🔴 {address}" if 'мск' in str(address).lower() else f"🔵 {address}",
             callback_data=callback_center.new(event=event, payload=center.id)))
     return markup
 

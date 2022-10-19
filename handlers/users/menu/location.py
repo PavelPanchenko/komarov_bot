@@ -17,11 +17,12 @@ async def location_map(message: Message):
 async def get_location(call: CallbackQuery, callback_data: dict):
     await bot.answer_callback_query(callback_query_id=call.id)
     location_id = callback_data.get('payload')
-
-    addresses = get_addresses_db()
-    await call.message.edit_reply_markup(reply_markup=location_items(addresses, active_id=int(location_id)))
-
     center_name = get_addresses_by_id_db(location_id)
+
+    # addresses = get_addresses_db()
+    # await call.message.edit_reply_markup(reply_markup=location_items(addresses))
+    await call.message.answer(f'<pre>Локация по адресу: {center_name.address}</pre>')
+
     location = geolocator.geocode(center_name.address, language='ru')
     print(location.latitude)
 
