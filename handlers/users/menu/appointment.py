@@ -36,8 +36,9 @@ async def get_location_center(message: Message, state: FSMContext):
 async def get_location(call: CallbackQuery, callback_data: dict, state: FSMContext):
     await bot.answer_callback_query(callback_query_id=call.id)
     location = callback_data.get('payload')
-    await call.message.answer(text=f'<pre>Адрес: {location}</pre>')
-    await state.update_data(location=location)
+    address = get_addresses_by_id_db(location)
+    await call.message.answer(text=f'<pre>Адрес: {address.address}</pre>')
+    await state.update_data(location=address.address)
     await appointment_date(call)
 
 
@@ -46,7 +47,7 @@ async def appointment_date(call):
         datetime.date.today() + datetime.timedelta(days=1),
         datetime.date.today() + datetime.timedelta(days=1),
         datetime.date.today() + datetime.timedelta(weeks=16))
-    await call.message.edit_text(text=date_to_center_message, reply_markup=inline_calendar.get_keyboard())
+    await call.message.answer(text=date_to_center_message, reply_markup=inline_calendar.get_keyboard())
 
 
 @dp.callback_query_handler(inline_calendar.filter())
@@ -98,9 +99,9 @@ async def get_service(call: CallbackQuery, callback_data: dict, state: FSMContex
 
     data = await state.get_data()
     location, picked_data, time, service = data.values()
-    center = get_addresses_by_id_db(location)
+    # center = get_addresses_by_id_db(location)
     await call.message.answer(
-        text=data_to_center_message.format(center.address, picked_data, time, service),
+        text=data_to_center_message.format(location, picked_data, time, service),
         reply_markup=accept_appointment_button)
 
 
