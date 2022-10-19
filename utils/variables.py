@@ -1,12 +1,12 @@
 authorization_message = """<pre>
-<i>Добро пожаловать {} 👋🏻!
-Авторизуйтесь пожалуйста.</i> 🔐
+🤖 Добро пожаловать {}!
+Авторизуйтесь пожалуйста.
 </pre>
 """
 
 main_menu_message = "<pre>Главное меню</pre>"
 
-success_authorization_message = "<pre>Авторизация прошла успешно ✅</pre>"
+success_authorization_message = "<pre>✅ Авторизация прошла успешно</pre>"
 error_authorization_message = "<pre>Доступ запрещен ⛔</pre>"
 
 loading_icon = r'CAACAgIAAxkBAAJNN2I3GMOSOBp9h5OH-kDsCF71w8t-AAJDAQACzRswCIC-idiBA72TIwQ'

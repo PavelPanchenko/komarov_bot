@@ -21,11 +21,15 @@ from utils.variables import success_confirm_record, reject_confirm_record, send_
     ChatTypeFilter(ChatType.SUPERGROUP), callback_record.filter(event='accept_record'))
 async def admin_accept_handler(call: CallbackQuery, callback_data: dict):
     record_id = int(callback_data['payload'])
-    update_record_db(record_id=record_id, confirmation=True)
     record = get_record_by_id_db(record_id)
-    await bot.send_message(chat_id=record.user, text=success_confirm_record.format(record.record.date_time))
-    await call.answer(text='Пользователь уведомлен', show_alert=True)
-    await call.message.edit_reply_markup(reply_markup=accept_record_button(record_id, accepted_btn=False))
+    if record:
+        is_update_record = update_record_db(record_id=record_id, confirmation=True)
+
+        await bot.send_message(chat_id=record.user, text=success_confirm_record.format(record.record.date_time))
+        await call.answer(text='Пользователь уведомлен', show_alert=True)
+        return await call.message.edit_reply_markup(reply_markup=accept_record_button(record_id, accepted_btn=False))
+    await call.message.delete()
+    await call.message.answer('Запись больше не существует')
 
 
 @dp.callback_query_handler(ChatTypeFilter(ChatType.SUPERGROUP), callback_record.filter(event='reject_record'))
