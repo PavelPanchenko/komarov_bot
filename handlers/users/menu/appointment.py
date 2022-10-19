@@ -36,6 +36,7 @@ async def get_location_center(message: Message, state: FSMContext):
 async def get_location(call: CallbackQuery, callback_data: dict, state: FSMContext):
     await bot.answer_callback_query(callback_query_id=call.id)
     location = callback_data.get('payload')
+    await call.message.answer(text=f'<pre>Адрес: {location}</pre>')
     await state.update_data(location=location)
     await appointment_date(call)
 
@@ -76,7 +77,6 @@ async def get_time(message: Message, state: FSMContext):
     try:
         time = datetime.datetime.strptime(message.text, '%H:%M').time()
         if datetime.time(hour=9, minute=0) <= time <= datetime.time(hour=19, minute=0):
-            print('в диапазоне')
             await state.reset_state(with_data=False)
             await state.update_data(time=time)
             return await input_data(message)

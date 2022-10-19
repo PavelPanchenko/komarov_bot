@@ -24,7 +24,6 @@ async def my_records_list(message: Message):
 @dp.callback_query_handler(ChatTypeFilter(ChatType.PRIVATE), callback_record.filter(event='cancel_record'))
 async def cancel_rec(call: CallbackQuery, callback_data: dict):
     record_id = callback_data['payload']
-    await call.message.delete()
-    await call.answer('Запись удалена')
+    await call.message.reply(text='<pre>Запись удалена</pre>')
     delete_record_db(record_id)
     await bot.send_message(chat_id=GROUP_ID, text=reject_confirm_user_record.format(record_id))
