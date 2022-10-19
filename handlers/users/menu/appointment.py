@@ -6,7 +6,7 @@ from api.database.address import get_addresses_db, get_addresses_by_id_db
 from api.database.record import add_record_db
 from api.database.user import get_user_db
 from api.schemas.record import CreateRecord
-from data.static_data import list_services
+from utils.static_data import list_services
 from keyboards.default.buttons import main_menu_buttons
 from keyboards.inline.button import location_items, callback_center, accept_appointment_button, services_items, \
     callback_service, accept_record_button
@@ -17,8 +17,8 @@ from settings.config import GROUP_ID
 from states.state import Appointments
 from utils.inline_calendar import InlineCalendar
 from utils.variables import record_to_center_message, date_to_center_message, time_to_center_message, \
-    data_to_center_message, send_data_record, service_message, not_edit_record_message, send_admins_record_message, \
-    closed_time_message, opening_hours_message
+    data_to_center_message, send_data_record, service_message, send_admins_record_message, \
+    opening_hours_message
 
 inline_calendar = InlineCalendar()
 

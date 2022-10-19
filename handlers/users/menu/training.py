@@ -1,4 +1,4 @@
-from data.static_data import list_services
+from utils.static_data import list_services
 from keyboards.inline.button import services_items, callback_service
 from loader import dp, bot
 from aiogram.types import Message, CallbackQuery

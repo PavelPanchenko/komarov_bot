@@ -1,8 +1,7 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.callback_data import CallbackData
-from pydantic import BaseModel
 
-from data.static_data import list_services
+from utils.static_data import list_services
 
 callback_center = CallbackData('center', 'event', 'payload')
 callback_service = CallbackData('service', 'event', 'payload')
