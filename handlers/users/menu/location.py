@@ -16,6 +16,9 @@ async def location_map(message: Message):
 @dp.callback_query_handler(callback_center.filter(event='geo'))
 async def get_location(call: CallbackQuery, callback_data: dict):
     await bot.answer_callback_query(callback_query_id=call.id)
+
+    await call.message.delete()
+
     location_id = callback_data.get('payload')
     center_name = get_addresses_by_id_db(location_id)
 

@@ -35,6 +35,8 @@ async def get_location_center(message: Message, state: FSMContext):
 @dp.callback_query_handler(callback_center.filter(event='center_list'))
 async def get_location(call: CallbackQuery, callback_data: dict, state: FSMContext):
     await bot.answer_callback_query(callback_query_id=call.id)
+
+    await call.message.delete()
     location_id = callback_data.get('payload')
 
     # all_location = get_addresses_db()
