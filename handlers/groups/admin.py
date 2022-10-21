@@ -160,21 +160,12 @@ async def get_message_all(message: Message, state: FSMContext):
 async def send_msg(message: Message, state: FSMContext):
 
     print('message in group: ', message)
-    # data = await state.get_data()
-    #
-    # if 'recipient' in data:
-    #     if data['recipient']:
-    #         if message.text:
-    #             await bot.send_message(chat_id=data['recipient'], text=message.text)
-    #
-    #         if message.photo:
-    #             await bot.send_photo(
-    #                 chat_id=data['recipient'], photo=message.photo[-1].file_id, caption=message.caption)
-    #
-    #         if message.document:
-    #             await bot.send_document(
-    #                 chat_id=data['recipient'], document=message.document.file_id, caption=message.caption)
-    #
-    #     else:
-    #         await message.delete()
-    #         await message.answer('Выберите получателя')
+    if message.reply_to_message and message.reply_to_message.forward_from['id']:
+        chat_id = message.reply_to_message.forward_from['id']
+
+        if message.photo:
+            file_id = message.photo[-1].file_id
+            await bot.send_photo(chat_id=chat_id, photo=file_id, caption=message.caption)
+        if message.document:
+            file_id = message.document.file_id
+            await bot.send_document(chat_id=chat_id, document=file_id, caption=message.caption)

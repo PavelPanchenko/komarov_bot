@@ -54,7 +54,8 @@ class UserFile(Base):
     id = Column(Integer, primary_key=True)
 
     file_name = Column(String)
-    file_content = Column(LargeBinary)
+    file_path = Column(String)
+    file_size = Column(String)
     user_id = Column(Integer, ForeignKey('users.id'))
     # user = relationship('User', backref="files")
 

@@ -31,18 +31,18 @@ async def send_all_notify(message: str = None, file: UploadFile = File(default=N
         file_bytes = file.file.read()
         for user in users:
             await bot.send_document(chat_id=user.tg_id, document=(file.filename, file_bytes), caption=message)
-        count_send += 1
+            count_send += 1
         return f'Отправлено {count_send} из {len(users)}'
 
     if file and not message:
         file_bytes = file.file.read()
         for user in users:
-            await bot.send_document(chat_id=user.tg_id, document=(file.filename, file_bytes), caption=message)
-        count_send += 1
+            await bot.send_document(chat_id=user.tg_id, document=(file.filename, file_bytes))
+            count_send += 1
         return f'Отправлено {count_send} из {len(users)}'
 
-    if not file:
+    if message and not file:
         for user in users:
             await bot.send_message(chat_id=user.tg_id, text=message)
-        count_send += 1
+            count_send += 1
         return f'Отправлено {count_send} из {len(users)}'

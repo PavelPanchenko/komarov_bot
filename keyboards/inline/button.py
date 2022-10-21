@@ -11,11 +11,12 @@ callback_file = CallbackData('file', 'event', 'payload')
 
 def location_items(locations, event: str = 'center_list'):
     markup = InlineKeyboardMarkup()
+    print(locations)
     for center in locations:
-        address = center.address
+        address = center['address']
         markup.add(InlineKeyboardButton(
             text=f"🔴 {address}" if 'москва' in str(address).lower() else f"🔵 {address}",
-            callback_data=callback_center.new(event=event, payload=center.id)))
+            callback_data=callback_center.new(event=event, payload=center['id'])))
     return markup
 
 

@@ -26,9 +26,6 @@ async def bot_echo(message: Message):
             photo = message.photo[-1].file_id
             await bot.send_photo(chat_id=user_id, photo=photo, caption=message.caption)
 
-
-
     except Exception as ex:
         logging.warning(ex)
         await message.answer('<pre>ERROR❗️На это сообщение нельзя ответить</pre>')
-

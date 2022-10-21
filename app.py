@@ -1,29 +1,26 @@
+import logging
+
+import uvicorn as uvicorn
 from aiogram import Dispatcher, Bot
 from aiogram.types import Update
+from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from api.database.base import engine, Base
 from api.routs.files import files_routs
-from api.routs.location_center import location_routs
 from api.routs.notifications import notification_rout
 from api.routs.record import records_rout
 from api.routs.user import users_rout
 from api.routs.websocket import socket_routs
-from scheduler.scheduler import scheduler
+from loader import dp, bot
 from scheduler.tasks import helper
 from settings.config import BOT_TOKEN, HOST, PORT
-import uvicorn as uvicorn
-from fastapi import FastAPI
-import logging
-
-from loader import dp, bot
-import middlewares, filters, handlers
-from utils.notify_admins import on_startup_notify
 from utils.set_bot_commands import set_default_commands
+import middlewares, filters, handlers
 
 Base.metadata.create_all(engine)
 
-app = FastAPI(title='Telegram Bot API')
+app = FastAPI(title='Telegram Bot API', swagger_ui_parameters={"defaultModelsExpandDepth": -1})
 
 app.add_middleware(
     CORSMiddleware,
@@ -44,7 +41,7 @@ WEBHOOK_PATH = f'/bot/{BOT_TOKEN}'
 WEBHOOK_URL = HOST + WEBHOOK_PATH
 
 
-@app.post('/bot/{BOT_TOKEN}', tags=['Only for Telegram api'])
+@app.post('/bot/{BOT_TOKEN}', tags=['Only for Telegram api'], include_in_schema=False)
 async def bot_webhook(update: dict):
     try:
         telegram_update = Update(**update)

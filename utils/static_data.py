@@ -8,7 +8,7 @@ class ICenterAddresses(BaseModel):
     address: str
 
 
-center_addresses = json.dumps([
+center_addresses = [
     {
         'id': 1,
         'address': 'СПБ, Лиговский, 78'
@@ -29,7 +29,7 @@ center_addresses = json.dumps([
         'id': 4,
         'address': 'Москва, Бориса Галушкина, 3'
     },
-])
+]
 
 list_services = [
     {

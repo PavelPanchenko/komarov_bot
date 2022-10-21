@@ -6,7 +6,7 @@ from api.database.address import get_addresses_db, get_addresses_by_id_db
 from api.database.record import add_record_db
 from api.database.user import get_user_db
 from api.schemas.record import CreateRecord
-from utils.static_data import list_services
+from utils.static_data import list_services, center_addresses
 from keyboards.default.buttons import main_menu_buttons
 from keyboards.inline.button import location_items, callback_center, accept_appointment_button, services_items, \
     callback_service, accept_record_button
@@ -26,7 +26,8 @@ inline_calendar = InlineCalendar()
 @dp.message_handler(text='📑Новая запись', state='*')
 async def get_location_center(message: Message, state: FSMContext):
     await state.reset_state(with_data=False)
-    location = get_addresses_db()
+    # location = get_addresses_db()
+    location = center_addresses
     await message.answer(
         text=record_to_center_message,
         reply_markup=location_items(location))
@@ -37,14 +38,15 @@ async def get_location(call: CallbackQuery, callback_data: dict, state: FSMConte
     await bot.answer_callback_query(callback_query_id=call.id)
 
     await call.message.delete()
-    location_id = callback_data.get('payload')
+    location_id = int(callback_data.get('payload'))
 
     # all_location = get_addresses_db()
     # await call.message.edit_reply_markup(reply_markup=location_items(all_location))
 
-    address = get_addresses_by_id_db(location_id)
-    await call.message.answer(text=f'<pre>Адрес: {address.address}</pre>')
-    await state.update_data(location=address.address)
+    # address = get_addresses_by_id_db(location_id)
+    address = center_addresses[location_id]
+    await call.message.answer(text=f'<pre>Адрес: {address["address"]}</pre>')
+    await state.update_data(location=address['address'])
     await appointment_date(call)
 
 
