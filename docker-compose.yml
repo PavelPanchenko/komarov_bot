@@ -7,8 +7,8 @@ services:
     ports:
       - '5000:5000'
     volumes:
-      - /data/:/app/data/
-      - /files/:/app/files/
+      - './data/:/app/data/'
+      - './files/:/app/files/'
     restart: always
     env_file:
       - '.env'
