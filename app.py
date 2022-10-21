@@ -35,7 +35,7 @@ app.add_middleware(
 
 app.include_router(users_rout)
 app.include_router(records_rout)
-app.include_router(location_routs)
+# app.include_router(location_routs)
 app.include_router(files_routs)
 app.include_router(socket_routs)
 app.include_router(notification_rout)
