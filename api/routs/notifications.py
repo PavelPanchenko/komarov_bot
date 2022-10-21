@@ -23,7 +23,7 @@ async def send_notify(tg_id: int, message: str = None, file: UploadFile = File(d
 
 
 @notification_rout.post('/all', tags=['Notify'])
-async def send_all_notify(message: str, file: UploadFile(default=None) = None):
+async def send_all_notify(message: str, file: UploadFile = File(default=None)):
     users = get_user_all_db()
     count_send = 0
     for user in users:
