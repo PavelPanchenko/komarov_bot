@@ -18,7 +18,16 @@ async def bot_echo(message: Message):
             user_id = message.reply_to_message.entities[1].user.id
         if msg.forward_from:
             user_id = msg.forward_from['id']
-        await bot.send_message(chat_id=user_id, text=message.text)
+
+        if message.text:
+            await bot.send_message(chat_id=user_id, text=message.text)
+
+        if message.photo:
+            photo = message.photo[-1].file_id
+            await bot.send_photo(chat_id=user_id, photo=photo, caption=message.caption)
+
+
+
     except Exception as ex:
         logging.warning(ex)
         await message.answer('<pre>ERROR❗️На это сообщение нельзя ответить</pre>')

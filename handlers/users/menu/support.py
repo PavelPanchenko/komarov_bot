@@ -9,7 +9,7 @@ from states.state import Support
 from utils.variables import support_start_message, error_message
 
 
-@dp.message_handler(text='❔Задать вопрос', state='*')
+@dp.message_handler(text='❓Задать вопрос', state='*')
 async def support(message: Message, state: FSMContext):
     await state.reset_state(with_data=False)
     # await message.answer(text=support_start_message, reply_markup=support_close_button)

@@ -45,21 +45,21 @@ async def admin_accept_handler(call: CallbackQuery, callback_data: dict, state: 
     await call.message.delete()
 
 
-@dp.callback_query_handler(ChatTypeFilter(ChatType.SUPERGROUP), callback_record.filter(event='send_message'))
-async def admin_accept_handler(call: CallbackQuery, callback_data: dict, state: FSMContext):
-    record_id = int(callback_data['payload'])
-    record = get_record_by_id_db(record_id)
-    await state.update_data(recipient=record['user'])
-    await call.message.answer(text=f'Начните писать пользователю {call.from_user.full_name}',
-                              reply_markup=support_close_button)
+# @dp.callback_query_handler(ChatTypeFilter(ChatType.SUPERGROUP), callback_record.filter(event='send_message'))
+# async def admin_accept_handler(call: CallbackQuery, callback_data: dict, state: FSMContext):
+#     record_id = int(callback_data['payload'])
+#     record = get_record_by_id_db(record_id)
+#     await state.update_data(recipient=record['user'])
+#     await call.message.answer(text=f'Начните писать пользователю {call.from_user.full_name}',
+#                               reply_markup=support_close_button)
 
 
-@dp.callback_query_handler(ChatTypeFilter(ChatType.SUPERGROUP), callback_file.filter(event='callback'))
-async def callback_mess(call: CallbackQuery, callback_data: dict, state: FSMContext):
-    chat_id = int(callback_data['payload'])
-    await state.update_data(recipient=chat_id)
-    await call.message.answer(
-        text=f'Начните писать пользователю {call.from_user.full_name}', reply_markup=support_close_button)
+# @dp.callback_query_handler(ChatTypeFilter(ChatType.SUPERGROUP), callback_file.filter(event='callback'))
+# async def callback_mess(call: CallbackQuery, callback_data: dict, state: FSMContext):
+#     chat_id = int(callback_data['payload'])
+#     await state.update_data(recipient=chat_id)
+#     await call.message.answer(
+#         text=f'Начните писать пользователю {call.from_user.full_name}', reply_markup=support_close_button)
 
 
 @dp.callback_query_handler(ChatTypeFilter(ChatType.SUPERGROUP), callback_record.filter(event='close_record'))
@@ -89,7 +89,7 @@ async def get_admin_menu_records(call: CallbackQuery):
 
 @dp.callback_query_handler(ChatTypeFilter(ChatType.SUPERGROUP), text='menu_record_items')
 async def get_appointment(call: CallbackQuery):
-    await call.answer(call.id)
+    await bot.answer_callback_query(call.id)
     appointments = get_record_all_db(sort='confirmed')
     if not appointments:
         return await call.message.answer(text=confirmed_rec_message)
@@ -98,14 +98,14 @@ async def get_appointment(call: CallbackQuery):
         await dp.bot.send_message(
             chat_id=call.message.chat.id,
             text=send_admins_record_message.format(
-                record.id, user.fullname, record.date_time,
+                record.id, f'<a href="{call.from_user.url}">{call.from_user.first_name}</a>', record.date_time,
                 record.service, record.location),
             reply_markup=accept_record_button(record.id, accepted_btn=False))
 
 
 @dp.callback_query_handler(ChatTypeFilter(ChatType.SUPERGROUP), text='menu_not_record_items')
 async def get_appointment_unconfirmed(call: CallbackQuery):
-    await call.answer(call.id)
+    await bot.answer_callback_query(call.id)
     appointments = get_record_all_db(sort='not_confirmed')
 
     if not appointments:
@@ -115,7 +115,7 @@ async def get_appointment_unconfirmed(call: CallbackQuery):
         await dp.bot.send_message(
             chat_id=call.message.chat.id,
             text=send_admins_record_message.format(
-                record.id, user.fullname, record.date_time,
+                record.id, f'<a href="{call.from_user.url}">{call.from_user.first_name}</a>', record.date_time,
                 record.service, record.location),
             reply_markup=accept_record_button(record.id))
 

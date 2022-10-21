@@ -17,9 +17,9 @@ authorization_button.add(KeyboardButton(text='Авторизация 🔓', requ
 main_menu_buttons = ReplyKeyboardMarkup(resize_keyboard=True, selective=False)
 main_menu_buttons.add(KeyboardButton(text='📑Новая запись'))
 main_menu_buttons.insert(KeyboardButton(text='📁Мои записи'))
-main_menu_buttons.add(KeyboardButton(text='❕Информация'))
+main_menu_buttons.add(KeyboardButton(text='❗️Информация'))
 main_menu_buttons.insert(KeyboardButton(text='📌Отправить файл'))
-main_menu_buttons.add(KeyboardButton(text='❔Задать вопрос'))
+main_menu_buttons.add(KeyboardButton(text='❓Задать вопрос'))
 
 info_menu_buttons = ReplyKeyboardMarkup(resize_keyboard=True, selective=False)
 info_menu_buttons.add(KeyboardButton(text='🗓График'))

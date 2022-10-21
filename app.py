@@ -1,5 +1,6 @@
 from aiogram import Dispatcher, Bot
 from aiogram.types import Update
+from starlette.middleware.cors import CORSMiddleware
 
 from api.database.base import engine, Base
 from api.routs.files import files_routs
@@ -23,6 +24,14 @@ from utils.set_bot_commands import set_default_commands
 Base.metadata.create_all(engine)
 
 app = FastAPI(title='Telegram Bot API')
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(users_rout)
 app.include_router(records_rout)
