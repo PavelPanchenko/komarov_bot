@@ -69,7 +69,6 @@ async def calendar_callback_handler(q: CallbackQuery, callback_data: dict, state
             reply_markup=inline_calendar.get_keyboard(q.from_user.id))
 
     if isinstance(picked_data, datetime.date):
-        print('isinstance')
         await state.update_data(picked_data=str(picked_data))
         await q.message.edit_text(text=str(picked_data), reply_markup=None)
 

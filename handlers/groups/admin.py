@@ -159,7 +159,7 @@ async def get_message_all(message: Message, state: FSMContext):
                     content_types=[ContentType.TEXT, ContentType.PHOTO, ContentType.DOCUMENT])
 async def send_msg(message: Message, state: FSMContext):
 
-    print('message in group: ', message)
+    # print('message in group: ', message)
     if message.reply_to_message and message.reply_to_message.forward_from['id']:
         chat_id = message.reply_to_message.forward_from['id']
 
