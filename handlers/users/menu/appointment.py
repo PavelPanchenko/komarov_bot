@@ -98,15 +98,15 @@ async def input_data(message):
     await message.answer(text=service_message, reply_markup=services_items())
 
 
-@dp.callback_query_handler(callback_service.filter(event='service'))
+@dp.callback_query_handler(callback_service.filter())
 async def get_service(call: CallbackQuery, callback_data: dict, state: FSMContext):
     service_id = int(callback_data.get('payload'))
     services = next((item for item in list_services if item['id'] == service_id), None)
+
     await state.update_data(service=services['category'])
 
     data = await state.get_data()
     location, picked_data, time, service = data.values()
-    # center = get_addresses_by_id_db(location)
     await call.message.answer(
         text=data_to_center_message.format(location, picked_data, time, service),
         reply_markup=accept_appointment_button)
@@ -121,7 +121,6 @@ async def send_data(call: CallbackQuery, callback_data: dict, state: FSMContext)
         match callback_data.get('payload'):
             case 'send':
                 # Send to server data
-                center = get_addresses_by_id_db(data['location'])
                 record_time = f"{data['picked_data']} {data['time']}"
                 user = get_user_db(tg_id=call.message.chat.id)
                 payload = CreateRecord(location=data['location'], date_time=record_time, user_id=user.id,

@@ -192,3 +192,4 @@ dmypy.json
 cython_debug/
 test.py
 .idea/
+data/application.db
