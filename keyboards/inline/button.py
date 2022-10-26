@@ -19,9 +19,9 @@ def location_items(locations, event: str = 'center_list'):
     return markup
 
 
-def services_items(event: str = 'service'):
+def services_items(items: list = list_services, event: str = 'service') -> InlineKeyboardMarkup:
     markup = InlineKeyboardMarkup()
-    for service in list_services:
+    for service in items:
         markup.add(InlineKeyboardButton(
             text=service['category'],
             callback_data=callback_service.new(event=event, payload=service['id'])))
@@ -35,7 +35,7 @@ accept_appointment_button.add(
     InlineKeyboardButton(text='Отредактировать', callback_data=callback_center.new(event='send_data', payload='edit')))
 
 
-def accept_record_button(record_id: int, accepted_btn: bool = True):
+def accept_record_button(record_id: int, accepted_btn: bool = True) -> InlineKeyboardMarkup:
     markup = InlineKeyboardMarkup()
     if accepted_btn:
         markup.add(
