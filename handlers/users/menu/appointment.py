@@ -40,11 +40,13 @@ async def get_location(call: CallbackQuery, callback_data: dict, state: FSMConte
     await call.message.delete()
     location_id = int(callback_data.get('payload'))
 
+    address = next((item for item in center_addresses if item['id'] == location_id), None)
     # all_location = get_addresses_db()
     # await call.message.edit_reply_markup(reply_markup=location_items(all_location))
 
     # address = get_addresses_by_id_db(location_id)
-    address = center_addresses[location_id]
+
+    # address = center_addresses[location_id]
     await call.message.answer(text=f'<pre>Адрес: {address["address"]}</pre>')
     await state.update_data(location=address['address'])
     await appointment_date(call)
