@@ -88,3 +88,8 @@ list_services = [
         'description': 'При себе иметь паспорт'
     },
 ]
+
+
+files = {
+    'memo': 'BQACAgIAAxkBAAIrkmNjxCOv0bD0rgwarEEec7mkV1rqAALcIwACfS6QSh6YAAEobl9PBSoE'
+}

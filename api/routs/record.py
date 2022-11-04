@@ -6,6 +6,7 @@ from api.schemas.record import RecordItem
 from loader import bot
 
 from api.database import record
+from utils.static_data import files
 from utils.types import RecordSort
 from utils.variables import success_confirm_record
 
@@ -33,14 +34,21 @@ async def get_record(record_id: int):
 @records_rout.patch('/{record_id}', tags=['Записи'], name='Подтвердить запись')
 async def confirmation(record_id: int, msg: str = None):
     rc = get_record_by_id_db(record_id)
-    if rc['record'].confirmation:
-        raise HTTPException(status_code=status.HTTP_200_OK, detail='Запись уже была подтверждена')
+    print(rc.user)
+    if rc:
+        if rc.record.confirmation:
+            raise HTTPException(status_code=status.HTTP_200_OK, detail='Запись уже была подтверждена')
 
-    record.update_record_db(record_id, True)
+        record.update_record_db(record_id, True)
 
-    await bot.send_message(chat_id=rc['user'],
-                           text=msg if msg else success_confirm_record.format(rc['record'].date_time))
-    return status.HTTP_200_OK
+        await bot.send_message(
+            chat_id=rc.user,
+            text=msg if msg else success_confirm_record.format(rc.record.date_time))
+
+        await bot.send_document(chat_id=rc.user, document=files['memo'])
+        return status.HTTP_200_OK
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Пользователь не найден')
 
 
 @records_rout.delete('/{record_id}', tags=['Записи'], name='Удалить запись')

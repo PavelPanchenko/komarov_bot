@@ -28,9 +28,7 @@ class RecordByID(BaseModel):
 def get_record_by_id_db(record_id: int) -> RecordByID | None:
     with SessionLocal() as session:
         record = session.query(Record).filter(Record.id == record_id).one_or_none()
-        if record:
-            return RecordByID(record=record, user=record.users.tg_id)
-        return None
+        return RecordByID(record=record, user=record.users.tg_id)
 
 
 def get_record_all_db(sort: str = None) -> list[RecordItem] | list:

@@ -46,3 +46,9 @@ async def check_auth(message: types.Message):
 @dp.message_handler(ChatTypeFilter(ChatType.PRIVATE), text='🔙Главное меню')
 async def info_menu(message: Message):
     await message.answer(text='<i>Главное меню:</i>', reply_markup=main_menu_buttons)
+
+
+@dp.message_handler(content_types=['document'])
+async def get_files(message: Message):
+    if message.document:
+        await message.answer(text=message.document.file_id)
