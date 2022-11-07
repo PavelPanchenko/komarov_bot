@@ -13,6 +13,7 @@ from aiogram.types import CallbackQuery, ChatType, Message, ContentType
 
 from settings.config import GROUP_ID
 from states.state import MessageAll
+from utils.static_data import files
 from utils.variables import success_confirm_record, reject_confirm_record, send_admins_record_message, \
     confirmed_rec_message, unconfirmed_rec_message, for_all_users_message, users_empty_message
 
@@ -26,6 +27,7 @@ async def admin_accept_handler(call: CallbackQuery, callback_data: dict):
         is_update_record = update_record_db(record_id=record_id, confirmation=True)
 
         await bot.send_message(chat_id=record.user, text=success_confirm_record.format(record.record.date_time))
+        await bot.send_document(chat_id=record.user, document=files['memo'])
         await call.answer(text='Пользователь уведомлен', show_alert=True)
         return await call.message.edit_reply_markup(reply_markup=accept_record_button(record_id, accepted_btn=False))
     await call.message.delete()
