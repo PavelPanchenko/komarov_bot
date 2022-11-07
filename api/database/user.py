@@ -1,35 +1,22 @@
-from api.database.base import SessionLocal
+# from api.database.base import SessionLocal
+from typing import Optional
+
 from api.database.models import User
 from api.schemas.user import CreateUser
 
 
-def add_user_db(item: CreateUser):
-    with SessionLocal() as session:
-        user = User(**item.dict())
-        session.add(user)
-        session.commit()
-        session.refresh(user)
-        return user
+async def add_user_db(user: CreateUser) -> User:
+    u = User(**user.dict())
+    return await u.save()
 
 
-def get_user_db(tg_id: int):
-    with SessionLocal() as session:
-        return session.query(User).filter(User.tg_id == tg_id).one_or_none()
+async def get_user_db(tg_id: int) -> User | None:
+    return await User.objects.select_related(['records', 'files']).get_or_none(id=tg_id)
 
 
-def get_user_by_id_db(_id: int):
-    with SessionLocal() as session:
-        return session.query(User).filter(User.id == _id).one_or_none()
+async def get_user_by_id_db(_id: int) -> User | None:
+    return await User.objects.select_related(['records', 'files']).get_or_none(id=_id)
 
 
-def get_user_all_db(skip: int = 0, limit: int = 100):
-    with SessionLocal() as session:
-        return session.query(User).limit(limit).offset(skip).all()
-
-
-async def update_user_db(tg_id: int, is_recorded_by: bool):
-    with SessionLocal() as session:
-        user = session.query(User).filter(User.tg_id == tg_id).update({User.is_recorded_by: is_recorded_by})
-        session.commit()
-        session.refresh(user)
-        return user
+async def get_user_all_db(skip: int = 0, limit: int = 100) -> list[User]:
+    return await User.objects.limit(limit).offset(skip).select_related(['records', 'files']).all()

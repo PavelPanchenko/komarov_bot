@@ -6,6 +6,7 @@ from aiogram.dispatcher.filters.builtin import CommandStart
 from aiogram.types import ReplyKeyboardRemove, ChatType, Message
 from aiogram.dispatcher.filters import ChatTypeFilter
 
+from api.database.models import User
 from api.database.user import get_user_db, add_user_db
 from api.schemas.user import CreateUser
 from api.users_list import allowed_users_list
@@ -20,7 +21,7 @@ from utils.variables import authorization_message, success_authorization_message
 async def bot_start(message: types.Message, state: FSMContext):
     await state.finish()
     await message.delete()
-    is_user = get_user_db(tg_id=int(message.chat.id))
+    is_user = await get_user_db(tg_id=int(message.chat.id))
     if is_user:
         await message.answer(text=main_menu_message, reply_markup=main_menu_buttons)
     else:
@@ -30,8 +31,10 @@ async def bot_start(message: types.Message, state: FSMContext):
 
 @dp.message_handler(content_types=['contact'])
 async def check_auth(message: types.Message):
-    add_user_db(CreateUser(
-        tg_id=int(message.chat.id), fullname=message.chat.full_name, phone_number=message.contact.phone_number))
+    await add_user_db(CreateUser(
+        id=int(message.chat.id),
+        full_name=message.chat.full_name,
+        phone_number=message.contact.phone_number))
     await message.delete()
 
     if allowed_users_list(message.contact.phone_number):

@@ -10,7 +10,7 @@ from utils.variables import send_client_record_message, reject_confirm_user_reco
 
 @dp.message_handler(ChatTypeFilter(ChatType.PRIVATE), text='📁Мои записи', state='*')
 async def my_records_list(message: Message):
-    records = get_record_by_tg_db(message.chat.id)
+    records = await get_record_by_tg_db(message.chat.id)
     if not records:
         return await message.answer(text=not_record_list_message)
     for record in records:
@@ -23,9 +23,9 @@ async def my_records_list(message: Message):
 
 @dp.callback_query_handler(ChatTypeFilter(ChatType.PRIVATE), callback_record.filter(event='cancel_record'))
 async def cancel_rec(call: CallbackQuery, callback_data: dict):
-    record_id = callback_data['payload']
+    record_id = int(callback_data['payload'])
     await call.message.reply(text='<pre>Запись удалена</pre>')
-    delete_record_db(record_id)
+    await delete_record_db(record_id)
     await bot.send_message(chat_id=GROUP_ID, text=reject_confirm_user_record.format(record_id))
 
 

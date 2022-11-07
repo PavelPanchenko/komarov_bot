@@ -1,8 +1,8 @@
 import datetime
+import logging
 
 from aiogram.dispatcher import FSMContext
 
-from api.database.address import get_addresses_db, get_addresses_by_id_db
 from api.database.record import add_record_db
 from api.database.user import get_user_db
 from api.schemas.record import CreateRecord
@@ -86,6 +86,7 @@ async def appointment_time(call):
 async def get_time(message: Message, state: FSMContext):
     try:
         time = datetime.datetime.strptime(message.text, '%H:%M').time()
+
         if datetime.time(hour=9, minute=0) <= time <= datetime.time(hour=19, minute=0):
             await state.reset_state(with_data=False)
             await state.update_data(time=time)
@@ -107,10 +108,32 @@ async def get_service(call: CallbackQuery, callback_data: dict, state: FSMContex
 
     await state.update_data(service=services['category'])
 
+    if 'subcategory' in services:
+        return await call.message.edit_text(
+            text='Выберите подкатегорию:',
+            reply_markup=services_items(items=services['subcategory'], event='sub_service'))
+
     data = await state.get_data()
     location, picked_data, time, service = data.values()
     await call.message.answer(
         text=data_to_center_message.format(location, picked_data, time, service),
+        reply_markup=accept_appointment_button)
+
+
+@dp.callback_query_handler(callback_service.filter(event='sub_service'))
+async def select_sub_services(call: CallbackQuery, callback_data: dict, state: FSMContext):
+    await bot.answer_callback_query(call.id)
+
+    service_id = int(callback_data.get('payload'))
+
+    data = await state.get_data()
+    location, picked_data, time, service = data.values()
+    for item in list_services:
+        if service in item['category']:
+            update_service = f'{service} | {item["subcategory"][service_id -1]["category"]}'
+            await state.update_data(service=update_service)
+    await call.message.answer(
+        text=data_to_center_message.format(location, picked_data, time, update_service),
         reply_markup=accept_appointment_button)
 
 
@@ -125,10 +148,10 @@ async def send_data(call: CallbackQuery, callback_data: dict, state: FSMContext)
                 # Send to server data
                 record_time = f"{data['picked_data']} {data['time']}"
 
-                user = get_user_db(tg_id=call.message.chat.id)
-                payload = CreateRecord(location=data['location'], date_time=record_time, user_id=user.id,
+                # user = await get_user_db(tg_id=call.message.chat.id)
+                payload = CreateRecord(location=data['location'], date_time=record_time, user_id=call.message.chat.id,
                                        service=data['service'])
-                record = add_record_db(payload)
+                record = await add_record_db(payload)
                 await dp.bot.send_message(
                     chat_id=GROUP_ID,
                     text=send_admins_record_message.format(
@@ -139,4 +162,4 @@ async def send_data(call: CallbackQuery, callback_data: dict, state: FSMContext)
             case 'edit':
                 await get_location_center(call.message, state)
     except Exception as ex:
-        await bot.send_message(chat_id=GROUP_ID, text=f"Ошибка при создании записи: {str(ex)}")
+        logging.warning(ex)

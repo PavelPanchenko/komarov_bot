@@ -30,7 +30,7 @@ data_to_center_message = """<pre>
 """
 
 send_data_record = "<pre>Запись отправлена.\nОжидайте подтверждения от специалистов</pre>"
-success_confirm_record = "<pre>Запись подтверждена.\nМы вас ожидаем\n{}</pre>"
+success_confirm_record = "<pre>Запись подтверждена.\nМы вас ожидаем\n{}\nПо адресу: {}</pre>"
 reject_confirm_record = "<pre>Запись\nна {} \nотклонена.\nЗапишитесь повторно</pre>"
 reject_confirm_user_record = "<pre>Запись № {} отменена пользователем</pre>"
 for_all_users_message = 'Введите сообщение , которое хотите отправить всем'

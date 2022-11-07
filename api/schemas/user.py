@@ -1,12 +1,13 @@
 import datetime
 from pydantic import BaseModel
 
+from api.database.models import Record, UserFile
 from api.schemas.record import RecordItem
 
 
 class UserBase(BaseModel):
-    tg_id: int
-    fullname: str
+    id: int
+    full_name: str
     phone_number: str
 
     class Config:
@@ -14,11 +15,10 @@ class UserBase(BaseModel):
 
 
 class UserItem(UserBase):
-    id: int
-    create_at: datetime.datetime
+    created_at: datetime.datetime
+    records: list[Record] = []
+    files: list[UserFile] = []
 
 
 class CreateUser(UserBase):
     pass
-
-

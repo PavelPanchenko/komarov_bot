@@ -1,4 +1,3 @@
-from api.database.address import get_addresses_db, get_addresses_by_id_db
 from keyboards.inline.button import location_items, callback_center
 from loader import dp, bot
 from aiogram.types import Message, CallbackQuery

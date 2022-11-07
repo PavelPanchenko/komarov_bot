@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 class RecordBase(BaseModel):
     location: str
-    date_time: datetime.datetime
+    date_time: str
     user_id: int
     service: str
     confirmation: bool = False
