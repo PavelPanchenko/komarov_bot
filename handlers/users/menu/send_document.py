@@ -4,6 +4,7 @@ import shutil
 from aiogram.dispatcher import FSMContext
 
 from api.database.files import add_file_db
+from api.database.models import UserFile
 from loader import dp, bot
 from aiogram.types import Message
 
@@ -42,12 +43,11 @@ async def get_files(message: Message, state: FSMContext):
         with open(file_location, "wb") as file_object:
             shutil.copyfileobj(downloaded_file, file_object)
 
-        add_file_db(
-            tg_id=message.chat.id,
+        await add_file_db(UserFile(
+            user_id=message.chat.id,
             file_name=file_name,
             file_size=file_info.file_size,
-            file_path=f'{HOST}/' + file_location,
+            file_path=f'{HOST}/' + file_location)
         )
 
     await message.answer(text=success_format_files_message)
-

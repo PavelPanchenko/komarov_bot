@@ -1,11 +1,11 @@
 from typing import Optional
 from fastapi import APIRouter, HTTPException, Query, status
 
-from api.database.record import get_record_by_id_db, get_record_by_tg_db
-from api.schemas.record import RecordItem
+from api.database.models import Record
+from api.database.record import get_record_by_id_db, get_record_by_tg_db, get_record_all_db, update_record_db, \
+    delete_record_db
 from loader import bot
 
-from api.database import record
 from utils.static_data import files
 from utils.types import RecordSort
 from utils.variables import success_confirm_record
@@ -13,45 +13,42 @@ from utils.variables import success_confirm_record
 records_rout = APIRouter(prefix='/record')
 
 
-@records_rout.get('s', response_model=list[RecordItem], tags=['Записи'], name='Записи')
+@records_rout.get('s', response_model=list[Record], tags=['Записи'], name='Записи')
 async def list_records(
         sort: Optional[RecordSort] = Query(default=None, description='not_confirmed | confirmed', title='Params:')):
     if sort:
-        return record.get_record_all_db(sort.name)
-    return record.get_record_all_db()
+        return await get_record_all_db(sort.name)
+    return await get_record_all_db()
 
 
-@records_rout.get('s/{tg_id}', tags=['Записи'], name='Все записи пользователя')
-async def get_record(tg_id: int) -> list:
-    return record.get_record_by_tg_db(tg_id=tg_id)
+@records_rout.get('s/{tg_id}', response_model=list[Record], tags=['Записи'], name='Все записи пользователя')
+async def get_record(tg_id: int) -> list[Record]:
+    return await get_record_by_tg_db(tg_id=tg_id)
 
 
-@records_rout.get('/{record_id}', tags=['Записи'], name='Запись пользователя по ID')
+@records_rout.get('/{record_id}', response_model=Record, tags=['Записи'], name='Запись пользователя по ID')
 async def get_record(record_id: int):
-    return record.get_record_by_id_db(record_id=record_id)
+    return await get_record_by_id_db(record_id=record_id)
 
 
 @records_rout.patch('/{record_id}', tags=['Записи'], name='Подтвердить запись')
 async def confirmation(record_id: int, msg: str = None):
-    rc = get_record_by_id_db(record_id)
-    print(rc.user)
+    rc = await get_record_by_id_db(record_id)
     if rc:
-        if rc.record.confirmation:
+        if rc.confirmation:
             raise HTTPException(status_code=status.HTTP_200_OK, detail='Запись уже была подтверждена')
 
-        record.update_record_db(record_id, True)
+        await rc.update(confirmation=True)
 
-        await bot.send_message(
-            chat_id=rc.user,
-            text=msg if msg else success_confirm_record.format(rc.record.date_time))
-
-        await bot.send_document(chat_id=rc.user, document=files['memo'])
+        await bot.send_document(
+            chat_id=rc.user_id.id,
+            document=files['memo'],
+            caption=msg if msg else success_confirm_record.format(rc.date_time, rc.location))
         return status.HTTP_200_OK
     else:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Пользователь не найден')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Запись не найдена')
 
 
 @records_rout.delete('/{record_id}', tags=['Записи'], name='Удалить запись')
 async def delete_record(record_id: int):
-    record.delete_record_db(record_id)
-    return {}
+    return await delete_record_db(record_id)
