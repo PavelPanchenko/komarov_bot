@@ -22,15 +22,11 @@ async def get_location(call: CallbackQuery, callback_data: dict):
     await call.message.delete()
 
     location_id = int(callback_data.get('payload'))
-    # center_name = get_addresses_by_id_db(location_id)
-    center_name = center_addresses[location_id]
+    center = next((item for item in center_addresses if item['id'] == location_id), None)
 
-    # addresses = get_addresses_db()
-    # await call.message.edit_reply_markup(reply_markup=location_items(addresses))
-    await call.message.answer(f'<pre>Локация по адресу: {center_name["address"]}</pre>')
+    await call.message.answer(f'<pre>Локация по адресу: {center["address"]}</pre>')
 
-    location = geolocator.geocode(center_name['address'], language='ru')
-    print(location.latitude)
+    location = geolocator.geocode(center['address'], language='ru')
 
     await call.message.answer_location(
         latitude=location.latitude,
