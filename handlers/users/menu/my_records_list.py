@@ -1,3 +1,5 @@
+from aiogram.dispatcher import FSMContext
+
 from api.database.record import get_record_by_tg_db, delete_record_db
 from keyboards.inline.button import my_record_list_button, callback_record
 from loader import dp, bot
@@ -9,7 +11,9 @@ from utils.variables import send_client_record_message, reject_confirm_user_reco
 
 
 @dp.message_handler(ChatTypeFilter(ChatType.PRIVATE), text='📁Мои записи', state='*')
-async def my_records_list(message: Message):
+async def my_records_list(message: Message, state: FSMContext):
+
+    await state.reset_state(with_data=False)
     records = await get_record_by_tg_db(message.chat.id)
     if not records:
         return await message.answer(text=not_record_list_message)

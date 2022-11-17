@@ -53,10 +53,6 @@ def accept_record_button(record_id: int, accepted_btn: bool = True) -> InlineKey
 def my_record_list_button(record_id: int):
     markup = InlineKeyboardMarkup()
 
-    # markup.add(InlineKeyboardButton(
-    #     text='Перенести',
-    #     callback_data=callback_record.new(event='record_transfer', payload=record_id)))
-
     markup.row(InlineKeyboardButton(
         text='Отменить',
         callback_data=callback_record.new(event='cancel_record', payload=record_id)))

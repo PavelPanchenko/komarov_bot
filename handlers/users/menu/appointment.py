@@ -4,8 +4,8 @@ import logging
 from aiogram.dispatcher import FSMContext
 
 from api.database.record import add_record_db
-from api.database.user import get_user_db
 from api.schemas.record import CreateRecord
+
 from utils.static_data import list_services, center_addresses
 from keyboards.default.buttons import main_menu_buttons
 from keyboards.inline.button import location_items, callback_center, accept_appointment_button, services_items, \
@@ -26,7 +26,6 @@ inline_calendar = InlineCalendar()
 @dp.message_handler(text='📑Новая запись', state='*')
 async def get_location_center(message: Message, state: FSMContext):
     await state.reset_state(with_data=False)
-    # location = get_addresses_db()
     location = center_addresses
     await message.answer(
         text=record_to_center_message,
@@ -41,12 +40,7 @@ async def get_location(call: CallbackQuery, callback_data: dict, state: FSMConte
     location_id = int(callback_data.get('payload'))
 
     address = next((item for item in center_addresses if item['id'] == location_id), None)
-    # all_location = get_addresses_db()
-    # await call.message.edit_reply_markup(reply_markup=location_items(all_location))
 
-    # address = get_addresses_by_id_db(location_id)
-
-    # address = center_addresses[location_id]
     await call.message.answer(text=f'<pre>Адрес: {address["address"]}</pre>')
     await state.update_data(location=address['address'])
     await appointment_date(call)
@@ -94,7 +88,8 @@ async def get_time(message: Message, state: FSMContext):
         else:
             return await message.answer(text=opening_hours_message + '\nПовторите ввод')
     except ValueError:
-        await message.answer(text='Формат времени указан не верно. Повторите ввод')
+        await message.answer(
+            text='Формат времени указан не верно. Повторите ввод')
 
 
 async def input_data(message):
@@ -130,7 +125,7 @@ async def select_sub_services(call: CallbackQuery, callback_data: dict, state: F
     location, picked_data, time, service = data.values()
     for item in list_services:
         if service in item['category']:
-            update_service = f'{service} | {item["subcategory"][service_id -1]["category"]}'
+            update_service = f'{service} | {item["subcategory"][service_id - 1]["category"]}'
             await state.update_data(service=update_service)
     await call.message.answer(
         text=data_to_center_message.format(location, picked_data, time, update_service),
