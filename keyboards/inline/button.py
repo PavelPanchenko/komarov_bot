@@ -7,6 +7,7 @@ callback_center = CallbackData('center', 'event', 'payload')
 callback_service = CallbackData('service', 'event', 'payload')
 callback_record = CallbackData('record', 'event', 'payload')
 callback_file = CallbackData('file', 'event', 'payload')
+callback_time = CallbackData('time', 'event', 'payload', sep=';')
 
 
 def location_items(locations, event: str = 'center_list'):
@@ -53,9 +54,13 @@ def accept_record_button(record_id: int, accepted_btn: bool = True) -> InlineKey
 def my_record_list_button(record_id: int):
     markup = InlineKeyboardMarkup()
 
-    markup.row(InlineKeyboardButton(
+    markup.add(InlineKeyboardButton(
         text='Отменить',
         callback_data=callback_record.new(event='cancel_record', payload=record_id)))
+
+    markup.add(InlineKeyboardButton(
+        text='Перезаписаться',
+        callback_data=callback_record.new(event='new_record', payload=record_id)))
 
     return markup
 
@@ -78,3 +83,13 @@ admin_menu_record_button.add(InlineKeyboardButton(text='🔙 Назад', callba
 
 admin_cancel_message_all_users_button = InlineKeyboardMarkup()
 admin_cancel_message_all_users_button.add(InlineKeyboardButton(text='🔙 Назад', callback_data='admin_menu'))
+
+
+def get_working_time(working_time: object):
+    markup = InlineKeyboardMarkup(row_width=3)
+
+    for time in working_time:
+        markup.insert(InlineKeyboardButton(
+            text=time,
+            callback_data=callback_time.new(event='work_time', payload=time)))
+    return markup

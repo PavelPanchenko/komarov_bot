@@ -36,10 +36,8 @@ async def admin_accept_handler(call: CallbackQuery, callback_data: dict, state: 
     record_id = int(callback_data['payload'])
     record = await get_record_by_id_db(record_id)
     if record:
-        # await record.update(confirmation=False)
         await bot.send_message(chat_id=record.user_id.id, text=reject_confirm_record.format(record.date_time))
         await call.answer(text='Пользователь уведомлен', show_alert=True)
-        await state.update_data(recipient=None)
         await delete_record_db(record_id)
     await call.message.delete()
 

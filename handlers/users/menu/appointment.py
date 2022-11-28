@@ -3,13 +3,13 @@ import logging
 
 from aiogram.dispatcher import FSMContext
 
-from api.database.record import add_record_db
+from api.database.record import add_record_db, delete_record_db
 from api.schemas.record import CreateRecord
 
 from utils.static_data import list_services, center_addresses
 from keyboards.default.buttons import main_menu_buttons
 from keyboards.inline.button import location_items, callback_center, accept_appointment_button, services_items, \
-    callback_service, accept_record_button
+    callback_service, accept_record_button, get_working_time, callback_time, callback_record
 from loader import dp, bot
 from aiogram.types import Message, CallbackQuery
 
@@ -18,9 +18,17 @@ from states.state import Appointments
 from utils.inline_calendar import InlineCalendar
 from utils.variables import record_to_center_message, date_to_center_message, time_to_center_message, \
     data_to_center_message, send_data_record, service_message, send_admins_record_message, \
-    opening_hours_message
+    opening_hours_message, reject_confirm_user_record
 
 inline_calendar = InlineCalendar()
+
+
+@dp.callback_query_handler(callback_record.filter(event='new_record'))
+async def new_record(call: CallbackQuery, callback_data: dict, state: FSMContext):
+    record_id = int(callback_data['payload'])
+    await delete_record_db(record_id)
+    await bot.send_message(chat_id=GROUP_ID, text=reject_confirm_user_record.format(record_id))
+    await get_location_center(call.message, state=state)
 
 
 @dp.message_handler(text='📑Новая запись', state='*')
@@ -59,41 +67,45 @@ async def calendar_callback_handler(q: CallbackQuery, callback_data: dict, state
     await bot.answer_callback_query(q.id)
 
     picked_data = inline_calendar.handle_callback(q.from_user.id, callback_data)
+
+    data = await state.get_data()
+
     if picked_data in ['NEXT_MONTH', 'PREVIOUS_MONTH']:
         return await bot.edit_message_reply_markup(
             chat_id=q.from_user.id, message_id=q.message.message_id,
             reply_markup=inline_calendar.get_keyboard(q.from_user.id))
 
     if isinstance(picked_data, datetime.date):
-        await state.update_data(picked_data=str(picked_data))
-        await q.message.edit_text(text=str(picked_data), reply_markup=None)
+        address = next((item for item in center_addresses if item['address'] == data['location']), None)
+        is_day_of = address['working'][picked_data.weekday()]
+        if len(is_day_of):
+            await state.update_data(picked_data=str(picked_data))
+            await q.message.edit_text(text=str(picked_data), reply_markup=None)
 
-        await appointment_time(q)
+            await appointment_time(q, state, picked_data)
 
-
-async def appointment_time(call):
-    await call.message.answer(text=time_to_center_message)
-    await Appointments.time.set()
-
-
-@dp.message_handler(state=Appointments.time)
-async def get_time(message: Message, state: FSMContext):
-    try:
-        time = datetime.datetime.strptime(message.text, '%H:%M').time()
-
-        if datetime.time(hour=9, minute=0) <= time <= datetime.time(hour=19, minute=0):
-            await state.reset_state(with_data=False)
-            await state.update_data(time=time)
-            return await input_data(message)
         else:
-            return await message.answer(text=opening_hours_message + '\nПовторите ввод')
-    except ValueError:
-        await message.answer(
-            text='Формат времени указан не верно. Повторите ввод')
+            return await q.message.answer(
+                text='Выберите другую дату в этот день центр не работает',
+                reply_markup=inline_calendar.get_keyboard(q.from_user.id))
 
 
-async def input_data(message):
-    await message.answer(text=service_message, reply_markup=services_items())
+async def appointment_time(call, state, picked_data):
+    data = await state.get_data()
+    address = next((item for item in center_addresses if item['address'] == data['location']), None)
+    working_time = address['working'][picked_data.weekday()]
+
+    await call.message.answer(
+        text=time_to_center_message,
+        reply_markup=get_working_time(working_time)
+    )
+
+
+@dp.callback_query_handler(callback_time.filter(event='work_time'))
+async def get_time(call: CallbackQuery, callback_data: dict, state: FSMContext):
+    time = callback_data.get('payload')
+    await state.update_data(time=time)
+    await call.message.answer(text=service_message, reply_markup=services_items())
 
 
 @dp.callback_query_handler(callback_service.filter(event='service'))
@@ -103,32 +115,10 @@ async def get_service(call: CallbackQuery, callback_data: dict, state: FSMContex
 
     await state.update_data(service=services['category'])
 
-    if 'subcategory' in services:
-        return await call.message.edit_text(
-            text='Выберите подкатегорию:',
-            reply_markup=services_items(items=services['subcategory'], event='sub_service'))
-
     data = await state.get_data()
     location, picked_data, time, service = data.values()
     await call.message.answer(
         text=data_to_center_message.format(location, picked_data, time, service),
-        reply_markup=accept_appointment_button)
-
-
-@dp.callback_query_handler(callback_service.filter(event='sub_service'))
-async def select_sub_services(call: CallbackQuery, callback_data: dict, state: FSMContext):
-    await bot.answer_callback_query(call.id)
-
-    service_id = int(callback_data.get('payload'))
-
-    data = await state.get_data()
-    location, picked_data, time, service = data.values()
-    for item in list_services:
-        if service in item['category']:
-            update_service = f'{service} | {item["subcategory"][service_id - 1]["category"]}'
-            await state.update_data(service=update_service)
-    await call.message.answer(
-        text=data_to_center_message.format(location, picked_data, time, update_service),
         reply_markup=accept_appointment_button)
 
 
@@ -141,11 +131,13 @@ async def send_data(call: CallbackQuery, callback_data: dict, state: FSMContext)
         match callback_data.get('payload'):
             case 'send':
                 # Send to server data
-                record_time = f"{data['picked_data']} {data['time']}"
+                d_time = f"{data['picked_data']} {data['time'].split('-')[0]}"
+                record_time = datetime.datetime.fromisoformat(d_time)
 
                 # user = await get_user_db(tg_id=call.message.chat.id)
                 payload = CreateRecord(location=data['location'], date_time=record_time, user_id=call.message.chat.id,
                                        service=data['service'])
+
                 record = await add_record_db(payload)
                 await dp.bot.send_message(
                     chat_id=GROUP_ID,
