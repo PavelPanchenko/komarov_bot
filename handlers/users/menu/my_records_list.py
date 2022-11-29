@@ -32,8 +32,3 @@ async def cancel_rec(call: CallbackQuery, callback_data: dict):
     await delete_record_db(record_id)
     await bot.send_message(chat_id=GROUP_ID, text=reject_confirm_user_record.format(record_id))
 
-
-# @dp.callback_query_handler(ChatTypeFilter(ChatType.PRIVATE), callback_record.filter(event='record_transfer'))
-# async def cancel_rec(call: CallbackQuery, callback_data: dict):
-#     record_id = callback_data['payload']
-#     await get_location_center(call.message, state)

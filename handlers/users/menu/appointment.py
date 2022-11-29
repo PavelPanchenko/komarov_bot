@@ -86,7 +86,7 @@ async def calendar_callback_handler(q: CallbackQuery, callback_data: dict, state
 
         else:
             return await q.message.answer(
-                text='Выберите другую дату в этот день центр не работает',
+                text='<i>Выберите другую дату.</i>\n' + address['working_text'],
                 reply_markup=inline_calendar.get_keyboard(q.from_user.id))
 
 
