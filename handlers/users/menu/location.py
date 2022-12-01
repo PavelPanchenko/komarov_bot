@@ -26,11 +26,11 @@ async def get_location(call: CallbackQuery, callback_data: dict):
 
     await call.message.answer(f'<pre>Локация по адресу: {center["address"]}</pre>')
 
-    location = geolocator.geocode(center['address'], language='ru')
+    # location = geolocator.geocode(center['address'], language='ru')
 
     await call.message.answer_location(
-        latitude=location.latitude,
-        longitude=location.longitude,
+        latitude=center['coord']['lat'],
+        longitude=center['coord']['long'],
         # live_period=3600,
         heading=45
     )
