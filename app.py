@@ -31,7 +31,6 @@ import middlewares, filters, handlers
 app = FastAPI(title='Telegram Bot API', swagger_ui_parameters={"defaultModelsExpandDepth": -1})
 app.state.database = database
 
-
 app.include_router(users_rout)
 app.include_router(records_rout)
 # app.include_router(location_routs)
@@ -46,8 +45,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
 
 WEBHOOK_PATH = f'/bot/{BOT_TOKEN}'
 WEBHOOK_URL = HOST + WEBHOOK_PATH
