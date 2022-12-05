@@ -16,13 +16,13 @@ from api.routs.user import users_rout
 from api.routs.record import records_rout
 from api.routs.websocket import socket_routs
 from loader import dp, bot
-# from scheduler.tasks import helper
+from scheduler.tasks import helper
 from settings.config import BOT_TOKEN, HOST, PORT
 from utils.set_bot_commands import set_default_commands
 import middlewares, filters, handlers
 
-# engine = sqlalchemy.create_engine(DATABASE_URL)
-# metadata.create_all(engine)
+engine = sqlalchemy.create_engine(DATABASE_URL)
+metadata.create_all(engine)
 
 
 # Base.metadata.create_all(engine)
@@ -74,7 +74,7 @@ async def on_startup():
     await bot.delete_my_commands()
     await set_default_commands()
 
-    # scheduler.start()
+    scheduler.start()
 
     # await helper()
 
