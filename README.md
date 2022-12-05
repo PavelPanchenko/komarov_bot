@@ -14,12 +14,12 @@
 ![site](./med.png)
 
 #### **Установка**
-#####1. **Скачиваем файлы:**
+##### 1. **Скачиваем файлы:**
 ```
 git clone https://github.com/PavelPanchenko/komarov.git
 ```
 
-#####2. **Добавляем file `.env` c перемеными:**
+##### 2. **Добавляем file `.env` c перемеными:**
 ```
 BOT_TOKEN=Ваш токен бота
 ADMINS=0
@@ -35,7 +35,7 @@ DB_NAME=Имя базы данных
 DB_HOST=Хост базы данных
 ```
 
-#####3. **Запускаем docker-file**
+##### 3. **Запускаем docker-file**
 ```
 docker-compose up --build -d
 ```
