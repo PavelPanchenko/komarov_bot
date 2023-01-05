@@ -14,7 +14,6 @@ from loader import dp, bot
 from aiogram.types import Message, CallbackQuery
 
 from settings.config import GROUP_ID
-from states.state import Appointments
 from utils.inline_calendar import InlineCalendar
 from utils.variables import record_to_center_message, date_to_center_message, time_to_center_message, \
     data_to_center_message, send_data_record, service_message, send_admins_record_message, \

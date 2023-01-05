@@ -1,5 +1,5 @@
 from api.database.models import Record
-from api.schemas.record import CreateRecord, RecordItem
+from api.schemas.record import CreateRecord
 
 
 async def add_record_db(data: CreateRecord):

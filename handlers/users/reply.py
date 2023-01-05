@@ -1,9 +1,8 @@
 import logging
 
-import jmespath as jmespath
-from aiogram.types import Message, ChatType
-from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import ChatTypeFilter, IsReplyFilter
+from aiogram.types import Message, ChatType
+
 from loader import dp, bot
 
 

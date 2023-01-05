@@ -15,3 +15,4 @@ jmespath~=1.0.1
 ormar~=0.12.0
 databases~=0.6.1
 asyncpg
+psycopg2

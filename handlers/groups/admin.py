@@ -1,13 +1,12 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import ChatTypeFilter, Command
+from aiogram.types import CallbackQuery, ChatType, Message, ContentType
 
 from api.database.record import get_record_by_id_db, delete_record_db, get_record_all_db
 from api.database.user import get_user_all_db, get_user_by_id_db
 from keyboards.inline.button import callback_record, accept_record_button, admin_menu_button, \
     admin_menu_record_button, admin_cancel_message_all_users_button
 from loader import dp, bot
-from aiogram.types import CallbackQuery, ChatType, Message, ContentType
-
 from states.state import MessageAll
 from utils.static_data import files
 from utils.variables import success_confirm_record, reject_confirm_record, send_admins_record_message, \

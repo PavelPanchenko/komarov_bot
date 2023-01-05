@@ -1,15 +1,10 @@
-import base64
 import os.path
 
-from loader import bot
-from fastapi import APIRouter, UploadFile, File, HTTPException
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
-
-# from api.database.address import get_addresses_db, add_address_db, update_address_db, delete_address_db
-from api.database.files import get_all_files, get_files_by_id_db, delete_file_db
-# from api.database.user import get_user_db
 from starlette import status
 
+from api.database.files import get_all_files, get_files_by_id_db, delete_file_db
 from settings.config import HOST
 
 files_routs = APIRouter(prefix='/files')
@@ -38,15 +33,3 @@ async def get_file(file_id: int):
         await delete_file_db(file_id)
         return status.HTTP_200_OK
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='File not found')
-
-#
-# @files_routs.post('/send{tg_id}', tags=['Файлы'], name='Отправить файл пользователю')
-# async def add_location(tg_id: int, file: UploadFile = File(description='type: jpg, png, jpeg, pdf, txt')):
-#     if file.content_type in ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf', 'text/plain']:
-#         file_bytes = file.file.read()
-#         await bot.send_document(chat_id=tg_id, document=(file.filename, file_bytes))
-#         encode_string = base64.b64encode(file_bytes)
-#         return await add_file_db(tg_id, file_name=file.filename, file_content=encode_string)
-#     else:
-#         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail="Not supported format")
-#         # await bot.send_photo(chat_id=tg_id, photo=(file.filename, file.file.read()), caption=file.filename)

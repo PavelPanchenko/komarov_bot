@@ -1,6 +1,3 @@
-# from api.database.base import SessionLocal
-from typing import Optional
-
 from api.database.models import User
 from api.schemas.user import CreateUser
 

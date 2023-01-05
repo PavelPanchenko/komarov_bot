@@ -2,12 +2,11 @@ import os.path
 import shutil
 
 from aiogram.dispatcher import FSMContext
+from aiogram.types import Message
 
 from api.database.files import add_file_db
 from api.database.models import UserFile
 from loader import dp, bot
-from aiogram.types import Message
-
 from settings.config import GROUP_ID, HOST
 from states.state import Appointments
 from utils.variables import send_document_message, success_format_files_message
@@ -23,6 +22,7 @@ async def send_document(message: Message, state: FSMContext):
 @dp.message_handler(content_types=['document', 'photo'], state=Appointments.file)
 async def get_files(message: Message, state: FSMContext):
     await state.reset_state(with_data=False)
+    file_name = ''
 
     await bot.forward_message(chat_id=GROUP_ID, from_chat_id=message.from_user.id, message_id=message.message_id)
 

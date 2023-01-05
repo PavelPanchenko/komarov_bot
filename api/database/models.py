@@ -1,59 +1,8 @@
 import datetime
-from typing import Optional, Dict, List
+from typing import Optional
 
-from sqlalchemy import Column, Integer, String, BOOLEAN, ForeignKey, BLOB, DateTime, LargeBinary
-from sqlalchemy.orm import relationship, backref
-
-# from api.database.base import Base
-#
-#
-# class Center(Base):
-#     __tablename__ = "centers"
-#
-#     id = Column(Integer, primary_key=True)
-#     address = Column(String)
-#
-#
-# class User(Base):
-#     __tablename__ = "users"
-#
-#     id = Column(Integer, primary_key=True)
-#
-#     tg_id = Column(Integer)
-#     fullname = Column(String)
-#     phone_number = Column(String)
-#     create_at = Column(DateTime, default=datetime.datetime.now())
-#     records = relationship('Record', backref="users")
-#     files = relationship('UserFile', backref="users")
-#
-#
-# class Record(Base):
-#     __tablename__ = "records"
-#
-#     id = Column(Integer, primary_key=True)
-#
-#     location = Column(String)
-#     date_time = Column(DateTime)
-#     service = Column(String)
-#     confirmation = Column(BOOLEAN, default=False)
-#     user_id = Column(Integer, ForeignKey('users.id'))
-#
-#
-# class UserFile(Base):
-#     __tablename__ = "files"
-#
-#     id = Column(Integer, primary_key=True)
-#
-#     file_name = Column(String)
-#     file_path = Column(String)
-#     file_size = Column(String)
-#     user_id = Column(Integer, ForeignKey('users.id'))
-
-
-import datetime
-
-import ormar
 import databases
+import ormar
 import sqlalchemy
 
 from settings.config import DB_USER, DB_PASSWORD, DB_HOST, DB_NAME

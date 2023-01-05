@@ -1,8 +1,8 @@
 import datetime
+
 from pydantic import BaseModel
 
 from api.database.models import Record, UserFile
-from api.schemas.record import RecordItem
 
 
 class UserBase(BaseModel):

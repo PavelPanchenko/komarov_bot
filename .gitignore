@@ -193,3 +193,4 @@ cython_debug/
 test.py
 .idea/
 data/application.db
+data/jobs.db
