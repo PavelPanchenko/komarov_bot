@@ -17,6 +17,7 @@ from scheduler.scheduler import scheduler
 from scheduler.tasks import helper
 from settings.config import BOT_TOKEN, HOST, PORT
 from utils.set_bot_commands import set_default_commands
+import handlers
 
 engine = sqlalchemy.create_engine(DATABASE_URL)
 metadata.create_all(engine)
